@@ -1,0 +1,190 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BG from "../assets/bg.svg";
+import axcel from "../assets/axcel.png";
+import clamp from "../assets/clamp.svg";
+import crab from "../assets/crab.svg";
+import gift from "../assets/gift.svg";
+import { Image } from "astro:assets";
+import Fish1 from "../components/fish1.astro";
+import Fish2 from "../components/fish2.astro";
+---
+
+<Layout title="Welcome to Astro.">
+  <main
+    class="relative h-screen max-w-[650px] m-auto flex justify-center font-content text-white overflow-hidden"
+  >
+    <Image
+      src={BG}
+      class="h-full object-cover object-center"
+      alt="Background by Freepik"
+    />
+    <canvas id="animate" class="absolute z-40"></canvas>
+    <Fish2 />
+    <Fish1 />
+    <div class="absolute inset-0 text-center z-50">
+      <h5 class="text-sm md:text-lg mt-5 align-start">
+        Hi <span id="name" class="font-bold">Kawan</span>! Kamu Diundang
+      </h5>
+    </div>
+    <div class="absolute inset-0 text-center z-50 h-1/2 flex flex-col justify-center items-center">
+      <h1 class="font-header font-extrabold text-6xl md:text-8xl mb-1">Axcel's</h1>
+      <h2 class="font-header text-3xl md:text-6xl inline-flex mb-8">
+        <span class="text-xl align-top -mt-3">2nd</span> Birthday
+        <Image
+          id="gift"
+          src={gift}
+          alt="gift"
+          width="40"
+          height="40"
+          class="align-top -mt-4 animate-wiggle"
+        />
+      </h2>
+      <h3 class="mb-2 text-base md:text-lg font-bold">Minggu, 12 November 2023 | 11 Pagi</h3>
+      <h4 class="text-base md:text-lg">JL. Dirgantara IV B7 / 35 | Sawojajar, Malang</h4>
+    </div>
+    <div class="absolute bottom-0 w-full">
+      <Image
+        id="axcel"
+        src={axcel}
+        alt="Axcel diving"
+        class="w-2/3 mx-auto mb-[10vh]"
+      />
+    </div>
+    <div class="absolute bottom-0 w-full flex justify-around z-30">
+      <Image
+        id="clamp"
+        src={clamp}
+        width="50"
+        height="50"
+        class="ml-14"
+        alt="clamp"
+      />
+      <Image
+        id="crab"
+        src={crab}
+        width="50"
+        height="50"
+        class="mr-8 mb-16"
+        alt="crab"
+      />
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { timeline } from "motion";
+  import { circOut } from "../utils/easing";
+
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const params = Object.fromEntries(urlSearchParams.entries());
+  const nameEl = document.getElementById("name");
+  nameEl!.textContent = params.hello ?? "Guys";
+
+  const canvas = document.querySelector("canvas")!;
+  const container = document.getElementsByTagName("main")[0];
+  canvas.width = container.clientWidth;
+  canvas.height = container.clientHeight;
+  const ctx = canvas.getContext("2d")!;
+  const bubbles: any = [];
+  let bubbleCount = 20;
+  let bubbleSpeed = 1;
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    for (let i = 0; i < bubbles.length; i++) {
+      // first num = distance between waves
+      // second num = wave height
+      // third num = move the center of the wave away from the edge
+      bubbles[i].position.x =
+        Math.sin(bubbles[i].count / bubbles[i].distanceBetweenWaves) * 50 +
+        bubbles[i].xOff;
+      bubbles[i].position.y = bubbles[i].count;
+      bubbles[i].render();
+
+      if (bubbles[i].count < 0 - bubbles[i].radius) {
+        bubbles[i].count = canvas.height + bubbles[i].yOff;
+      } else {
+        bubbles[i].count -= bubbleSpeed;
+      }
+    }
+
+    window.requestAnimationFrame(animate);
+  }
+  window.requestAnimationFrame(animate);
+
+  const createBubble = function (this: any) {
+    this.position = { x: 0, y: 0 };
+    this.radius = 8 + Math.random() * 6;
+    this.xOff = Math.random() * canvas.width - this.radius;
+    this.yOff = Math.random() * canvas.height;
+    this.distanceBetweenWaves = 50 + Math.random() * 40;
+    this.count = canvas.height + this.yOff;
+    this.lines = [];
+    this.popping = false;
+    this.maxRotation = 85;
+    this.rotation =
+      Math.floor(Math.random() * (this.maxRotation - this.maxRotation * -1)) +
+      this.maxRotation * -1;
+    this.rotationDirection = "forward";
+
+    // Render the circles
+    this.render = function () {
+      if (this.rotationDirection === "forward") {
+        if (this.rotation < this.maxRotation) {
+          this.rotation++;
+        } else {
+          this.rotationDirection = "backward";
+        }
+      } else {
+        if (this.rotation > this.maxRotation * -1) {
+          this.rotation--;
+        } else {
+          this.rotationDirection = "forward";
+        }
+      }
+
+      ctx.save();
+      ctx.translate(this.position.x, this.position.y);
+      ctx.rotate((this.rotation * Math.PI) / 180);
+
+      if (!this.popping) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#AAE0FF";
+        ctx.fillStyle = "#AAE0FF";
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
+        ctx.stroke();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.strokeStyle = "#fff";
+        ctx.fillStyle = "#fff";
+        ctx.lineWidth = 1;
+        ctx.arc(0, 0, this.radius - 3, 0, Math.PI * 1.5, true);
+        // ctx.ellipse(-5, -5, this.radius + 1, this.radius + 1, 0, 0, Math.PI * 1.5, true);
+        ctx.stroke();
+        ctx.fill();
+      }
+
+      ctx.restore();
+    };
+  };
+
+  for (let i = 0; i < bubbleCount; i++) {
+    const tempBubble = new (createBubble as any)();
+    bubbles.push(tempBubble);
+  }
+
+  timeline(
+    [
+      ["#axcel", { y: -50 }, { easing: circOut, duration: 0.5, delay: 0.5 }],
+      ["#axcel", { y: 0 }, { easing: "ease-in-out", duration: 2 }],
+    ],
+    { repeat: Infinity }
+  );
+
+  window.addEventListener("resize", function () {
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+  });
+</script>
