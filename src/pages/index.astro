@@ -10,7 +10,7 @@ import Fish1 from "../components/fish1.astro";
 import Fish2 from "../components/fish2.astro";
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Hi Teman - Teman!">
   <main
     class="relative h-screen max-w-[650px] m-auto flex justify-center font-content text-white overflow-hidden"
   >
@@ -23,13 +23,13 @@ import Fish2 from "../components/fish2.astro";
     <Fish2 />
     <Fish1 />
     <div class="absolute inset-0 text-center z-50">
-      <h5 class="text-sm md:text-lg mt-5 align-start">
+      <h5 class="text-sm md:text-lg mt-5 align-start pcb:text-md">
         Hi <span id="name" class="font-bold">Kawan</span>! Kamu Diundang
       </h5>
     </div>
     <div class="absolute inset-0 text-center z-50 h-1/2 flex flex-col justify-center items-center">
-      <h1 class="font-header font-extrabold text-6xl md:text-8xl mb-1">Axcel's</h1>
-      <h2 class="font-header text-3xl md:text-6xl inline-flex mb-8">
+      <h1 class="font-header font-extrabold text-6xl md:text-8xl mb-1 pcb:text-7xl">Axcel's</h1>
+      <h2 class="font-header text-3xl md:text-6xl inline-flex mb-8 pcb:text-5xl">
         <span class="text-xl align-top -mt-3">2nd</span> Birthday
         <Image
           id="gift"
@@ -43,12 +43,12 @@ import Fish2 from "../components/fish2.astro";
       <h3 class="mb-2 text-base md:text-lg font-bold">Minggu, 12 November 2023 | 11 Pagi</h3>
       <h4 class="text-base md:text-lg">JL. Dirgantara IV B7 / 35 | Sawojajar, Malang</h4>
     </div>
-    <div class="absolute bottom-0 w-full">
+    <div class="absolute bottom-0 w-full z-50">
       <Image
         id="axcel"
         src={axcel}
         alt="Axcel diving"
-        class="w-2/3 mx-auto mb-[10vh]"
+        class="w-2/3 mx-auto mb-[10vh] pcb:-mb-2 pcb:w-1/2"
       />
     </div>
     <div class="absolute bottom-0 w-full flex justify-around z-30">
@@ -65,13 +65,12 @@ import Fish2 from "../components/fish2.astro";
         src={crab}
         width="50"
         height="50"
-        class="mr-8 mb-16"
+        class="mr-8 mb-16 pcb:mb-0"
         alt="crab"
       />
     </div>
   </main>
 </Layout>
-
 <script>
   import { timeline } from "motion";
   import { circOut } from "../utils/easing";
@@ -187,4 +186,12 @@ import Fish2 from "../components/fish2.astro";
     canvas.width = container.clientWidth;
     canvas.height = container.clientHeight;
   });
+
+</script>
+<script type="text/javascript">
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "jn2e5cd21e");
 </script>
